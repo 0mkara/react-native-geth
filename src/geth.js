@@ -176,6 +176,17 @@ class Geth {
   }
 
   /**
+  * Sign transaction.
+  * @param {Transaction} transaction Transaction object
+  * @param {String} address Signing address
+  * @param {String} passphrase Passphrase
+  * @return {String} Returns signed transaction
+  */
+  async signTransaction(transaction: Transaction, address: string, passphrase: string): Promise<Transaction> {
+      return await this.geth.signTransaction
+  }
+
+  /**
   * Retrieves the currently suggested gas price to allow a timely execution of a transaction.
   * @return {Double} Return suggested gas price
   */
