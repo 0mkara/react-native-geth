@@ -12,11 +12,11 @@ import Geth
 @objc(ReactNativeGeth)
 class ReactNativeGeth: NSObject {
     private var TAG: String = "Geth"
-    private var ETH_DIR: String = ".ethereum"
-    private var KEY_STORE_DIR: String = "keystore"
+    private var DATA_DIR = NSHomeDirectory()
+    private var ETH_DIR: String = "/.ethereum"
+    private var KEY_STORE_DIR: String = "/keystore"
     private let ctx: GethContext
     private var geth_node: NodeRunner
-    private var datadir = NSHomeDirectory()
 
     override init() {
         self.ctx = GethNewContext()
@@ -38,8 +38,8 @@ class ReactNativeGeth: NSObject {
     func nodeConfig(config: NSObject, resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
         do {
             let nodeconfig: GethNodeConfig = geth_node.getNodeConfig()!
-            var nodeDir: String = ETH_DIR
-            var keyStoreDir: String = KEY_STORE_DIR
+            var nodeDir: String = DATA_DIR + "/" + ETH_DIR
+            var keyStoreDir: String = DATA_DIR + "/" + ETH_DIR + "/" + KEY_STORE_DIR
             var error: NSError?
             
             if(config.value(forKey: "enodes") != nil) {
@@ -65,7 +65,7 @@ class ReactNativeGeth: NSObject {
                 keyStoreDir = config.value(forKey: "keyStoreDir") as! String
             }
             
-            let node: GethNode = GethNewNode(datadir + "/" + nodeDir, nodeconfig, &error)
+            let node: GethNode = GethNewNode(nodeDir, nodeconfig, &error)
             let keyStore: GethKeyStore = GethNewKeyStore(keyStoreDir, GethLightScryptN, GethLightScryptP)
             if error != nil {
                 reject(nil, nil, error)
@@ -124,6 +124,29 @@ class ReactNativeGeth: NSObject {
     }
     
     /**
+     * Create a new account with the specified encryption passphrase.
+     *
+     * @param passphrase Passphrase
+     * @param promise    Promise
+     * @return return new account object.
+     */
+    @objc(newAccount:resolver:rejecter:)
+    func newAccount(password: String, resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+        var account: GethAccount?
+        let ks: GethKeyStore? = self.geth_node.getKeystore()
+        do {
+            account = try ks?.newAccount(password)
+            var result = [String:Any]()
+            result["address"] = account?.getAddress().getHex()
+            result["account"] = (ks?.getAccounts().size())! - 1
+            resolve([result] as NSObject)
+        } catch let accError as NSError {
+            NSLog("@", accError)
+            reject(nil, nil, accError)
+        }
+    }
+    
+    /**
      * Send transaction.
      *
      * @param passphrase Passphrase
@@ -147,6 +170,7 @@ class ReactNativeGeth: NSObject {
             let signedTx: GethTransaction? = try signTx(tx: transaction, account: account!, password: password)
             sendSignedTransaction(signedTx: signedTx!, resolver: resolve, rejecter: reject)
         } catch let sendTxErr as NSError {
+            NSLog("@", sendTxErr)
             reject(nil, nil, sendTxErr)
         }
     }
@@ -163,6 +187,7 @@ class ReactNativeGeth: NSObject {
             let eth_client: GethEthereumClient? = try self.geth_node.getNode()?.getEthereumClient()
             try eth_client?.sendTransaction(ctx, tx: signedTx)
         } catch let sendTxErr as NSError {
+            NSLog("@", sendTxErr)
             reject(nil, nil, sendTxErr)
         }
     }
@@ -184,6 +209,7 @@ class ReactNativeGeth: NSObject {
             let signedTx: GethTransaction? = try signTx(tx: transaction, account: account!, password: password)
             resolve(signedTx)
         } catch let signErr as NSError {
+            NSLog("@", signErr)
             reject(nil, nil, signErr)
         }
     }

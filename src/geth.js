@@ -53,7 +53,8 @@ class Geth {
   * @return {Object} return new account object
   */
   async newAccount(passphrase: string): Promise<Account> {
-    return await this.geth.newAccount(passphrase)
+      const account: Account = await this.geth.newAccount(passphrase)
+      return account
   }
 
   /**
