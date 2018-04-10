@@ -137,9 +137,9 @@ const PrivateEth = async () => {
     -   [createAndSendTransaction](#createandsendtransaction)
     -   [suggestGasPrice](#suggestgasprice)
     -   [getPendingNonce](#getpendingnonce)
-    -   [sendTransaction](#sendTransaction) [ios]
-    -   [sendSignedTransaction](#sendSignedTransaction) [ios]
-    -   [signTransaction](#signTransaction) [ios]
+    -   [sendTransaction](#sendtransaction) [ios]
+    -   [sendSignedTransaction](#sendsignedtransaction) [ios]
+    -   [signTransaction](#signtransaction) [ios]
 
 ## Geth
 
