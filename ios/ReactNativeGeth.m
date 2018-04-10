@@ -8,11 +8,16 @@ RCT_EXTERN_METHOD(nodeConfig:(id) config
                   rejecter: (RCTPromiseRejectBlock) reject)
 RCT_EXTERN_METHOD(startNode:(RCTResponseSenderBlock) resolve rejecter:(RCTPromiseRejectBlock) reject)
 RCT_EXTERN_METHOD(stopNode:(RCTResponseSenderBlock) resolve rejecter:(RCTPromiseRejectBlock) reject)
-RCT_EXTERN_METHOD(sendTransaction:(id) transaction
+RCT_EXTERN_METHOD(sendTransaction:(NSObject *) transaction
+                  password: (NSString *) password
                   resolver: (RCTResponseSenderBlock) resolve
                   rejecter: (RCTPromiseRejectBlock) reject)
-RCT_EXTERN_METHOD(signTransaction:(id) transaction
+RCT_EXTERN_METHOD(signTransaction:(NSObject *) transaction
                   address: (NSString *) address
+                  password: (NSString *) password
+                  resolver: (RCTResponseSenderBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock) reject)
+RCT_EXTERN_METHOD(sendSignedTransaction:(NSObject *) transaction
                   resolver: (RCTResponseSenderBlock) resolve
                   rejecter: (RCTPromiseRejectBlock) reject)
 @end

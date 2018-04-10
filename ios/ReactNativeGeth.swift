@@ -175,11 +175,11 @@ class ReactNativeGeth: NSObject {
      * @return {String} Returns signed transaction
      */
     @objc(signTransaction:address:passphrase:resolver:rejecter:)
-    func signTransaction(transaction: GethTransaction, address: String?, password: String, resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+    func signTransaction(transaction: GethTransaction, address: String, password: String, resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
         do {
             var account: GethAccount? = self.geth_node.getCoinbase()
-            if(address != nil) {
-                account = try self.geth_node.getAccountFromHex(address: address!)
+            if(address.isEmpty) {
+                account = try self.geth_node.getAccountFromHex(address: address)
             }
             let signedTx: GethTransaction? = try signTx(tx: transaction, account: account!, password: password)
             resolve(signedTx)
