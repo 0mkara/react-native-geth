@@ -21,4 +21,5 @@ RCT_EXTERN_METHOD(sendSignedTransaction:(NSObject *) transaction
                   resolver: (RCTResponseSenderBlock) resolve
                   rejecter: (RCTPromiseRejectBlock) reject)
 RCT_EXTERN_METHOD(newAccount:(NSString *)password resolver: (RCTResponseSenderBlock)resolve rejecter:(RCTPromiseRejectBlock) reject)
+RCT_EXTERN_METHOD(listAccounts:(RCTResponseSenderBlock)resolve rejecter:(RCTPromiseRejectBlock) reject)
 @end

@@ -146,6 +146,28 @@ class ReactNativeGeth: NSObject {
     }
     
     /**
+     * Get list of accounts in keystore
+     * @return Returns Array of accounts
+     */
+    @objc(listAccounts:rejecter:)
+    func listAccounts(resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+        do {
+            var accountsStore = [[String:Any]]()
+            let keyStore: GethKeyStore? = self.geth_node.getKeystore()
+            let accounts: GethAccounts? = keyStore?.getAccounts()
+            for index in 0..<(accounts?.size())! {
+                let account: GethAccount? = try accounts?.get(index)
+                let address: String? = account?.getAddress().getHex()
+                let result: [String:Any] = ["address": address ?? "", "account": index]
+                accountsStore.append(result)
+            }
+            resolve([accountsStore] as NSObject)
+        } catch let accErr as NSError {
+            reject(nil, nil, accErr)
+        }
+    }
+    
+    /**
      * Send transaction.
      *
      * @param passphrase Passphrase
