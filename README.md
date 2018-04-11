@@ -80,6 +80,8 @@ const Eth = async () => {
 // Custom Ethereum Network
 const PrivateEth = async () => {
   // Network ID
+  const networkID = 1
+  // Chain ID
   const chainID = 17
   // genesis.json
   const genesis = `{
@@ -95,7 +97,7 @@ const PrivateEth = async () => {
   }`
 
   const config = {
-    "chainID": chainID, // --networkid / Network identifier (integer, 0=Olympic (disused), 1=Frontier, 2=Morden (disused), 3=Ropsten) (default: 1)
+    "networkID": networkID, // --networkid / Network identifier (integer, 0=Olympic (disused), 1=Frontier, 2=Morden (disused), 3=Ropsten) (default: 1)
     "maxPeers": 0, // --maxpeers / Maximum number of network peers (network disabled if set to 0) (default: 25)
     "genesis": genesis, // genesis.json file
     "nodeDir": ".private-ethereum", // --datadir / Data directory for the databases and keystore
@@ -133,13 +135,15 @@ const PrivateEth = async () => {
     -   [deleteAccount](#deleteaccount)
     -   [exportKey](#exportkey)
     -   [importKey](#importkey)
-    -   [listAccounts](#listaccounts)
+    -   [listAccounts](#listaccounts) [android, ios]
     -   [createAndSendTransaction](#createandsendtransaction)
     -   [suggestGasPrice](#suggestgasprice)
     -   [getPendingNonce](#getpendingnonce)
     -   [sendTransaction](#sendtransaction) [ios]
     -   [sendSignedTransaction](#sendsignedtransaction) [ios]
     -   [signTransaction](#signtransaction) [ios]
+    -   [getBalance](#getbalance) [ios]
+    -   [getPeersInfo](#getpeersinfo) [ios]
 
 ## Geth
 
@@ -330,6 +334,24 @@ Signs a transaction.
 -   `passphrase` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Passphrase
 
 Returns **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Return transaction
+
+### getBalance
+
+Gets balance of an address.
+
+**Parameters**
+
+-   `address` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Hex address string
+
+Returns **[BN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/BN)** Wei balance
+
+### getPeersInfo
+
+Gets all connected peers information in an array.
+
+**Parameters**
+
+Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Array of PeerInfo
 
 ---
 # Press the "Watch" button to get updates. Do not forget the "Star" button 😀
