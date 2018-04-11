@@ -92,11 +92,28 @@ class Geth {
   }
 
   /**
+  * Returns the wei balance of the specified account.
+  * @param {String} address Address of account being looked up.
+  * @return {String} Return balance.
+  */
+  async getBalance(address: string): Promise<string> {
+    return await this.geth.getBalance(address)
+  }
+
+  /**
   * Retrieves the current progress of the sync algorithm.
   * @return {Object} Return object sync progress or null
   */
   async syncProgress(): Promise<SyncProgress> {
     return await this.geth.syncProgress()
+  }
+
+  /**
+  * Retrieves the peers info
+  * @return {Object} Return Array of connected peers
+  */
+  async getPeersInfo(): Promise<Int> {
+    return await this.geth.getPeersInfo()
   }
 
   /**

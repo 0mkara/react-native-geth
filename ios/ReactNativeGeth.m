@@ -20,6 +20,11 @@ RCT_EXTERN_METHOD(signTransaction:(NSObject *) transaction
 RCT_EXTERN_METHOD(sendSignedTransaction:(NSObject *) transaction
                   resolver: (RCTResponseSenderBlock) resolve
                   rejecter: (RCTPromiseRejectBlock) reject)
-RCT_EXTERN_METHOD(newAccount:(NSString *)password resolver: (RCTResponseSenderBlock)resolve rejecter:(RCTPromiseRejectBlock) reject)
-RCT_EXTERN_METHOD(listAccounts:(RCTResponseSenderBlock)resolve rejecter:(RCTPromiseRejectBlock) reject)
+RCT_EXTERN_METHOD(newAccount:(NSString *) password resolver: (RCTResponseSenderBlock)resolve rejecter:(RCTPromiseRejectBlock) reject)
+RCT_EXTERN_METHOD(listAccounts:(RCTResponseSenderBlock) resolve rejecter:(RCTPromiseRejectBlock) reject)
+RCT_EXTERN_METHOD(getBalance:(NSString *) address
+                  resolver: (RCTResponseSenderBlock) resolve
+                  rejecter:(RCTPromiseRejectBlock) reject)
+RCT_EXTERN_METHOD(syncProgress:(RCTResponseSenderBlock) resolve rejecter:(RCTPromiseRejectBlock) reject)
+RCT_EXTERN_METHOD(getPeersInfo:(RCTResponseSenderBlock) resolve rejecter:(RCTPromiseRejectBlock) reject)
 @end

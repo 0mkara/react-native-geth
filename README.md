@@ -135,13 +135,15 @@ const PrivateEth = async () => {
     -   [deleteAccount](#deleteaccount)
     -   [exportKey](#exportkey)
     -   [importKey](#importkey)
-    -   [listAccounts](#listaccounts)
+    -   [listAccounts](#listaccounts) [android, ios]
     -   [createAndSendTransaction](#createandsendtransaction)
     -   [suggestGasPrice](#suggestgasprice)
     -   [getPendingNonce](#getpendingnonce)
     -   [sendTransaction](#sendtransaction) [ios]
     -   [sendSignedTransaction](#sendsignedtransaction) [ios]
     -   [signTransaction](#signtransaction) [ios]
+    -   [getBalance](#getbalance) [ios]
+    -   [getPeersInfo](#getpeersinfo) [ios]
 
 ## Geth
 
@@ -332,6 +334,24 @@ Signs a transaction.
 -   `passphrase` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Passphrase
 
 Returns **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Return transaction
+
+### getBalance
+
+Gets balance of an address.
+
+**Parameters**
+
+-   `address` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Hex address string
+
+Returns **[BN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/BN)** Wei balance
+
+### getPeersInfo
+
+Gets all connected peers information in an array.
+
+**Parameters**
+
+Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Array of PeerInfo
 
 ---
 # Press the "Watch" button to get updates. Do not forget the "Star" button 😀

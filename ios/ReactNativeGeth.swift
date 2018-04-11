@@ -168,6 +168,28 @@ class ReactNativeGeth: NSObject {
     }
     
     /**
+     * Get balance of an address
+     * @param address to get balance of
+     * @return Returns wei balance
+     */
+    @objc(getBalance:resolver:rejecter:)
+    func getBalance(address: String, resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+        do {
+            var error: NSError?
+            let account: GethAddress = GethNewAddressFromHex(address, &error)
+            if(error != nil) {
+                reject(nil, nil, error)
+            }
+            let node: GethNode? = self.geth_node.getNode()
+            let ec: GethEthereumClient? = try node?.getEthereumClient()
+            let balance: GethBigInt? = try ec?.getBalanceAt(self.ctx, account: account, number: -1)
+            resolve([balance] as NSObject)
+        } catch let balanceErr as NSError {
+            reject(nil, nil, balanceErr)
+        }
+    }
+    
+    /**
      * Send transaction.
      *
      * @param passphrase Passphrase
@@ -242,4 +264,42 @@ class ReactNativeGeth: NSObject {
         return signedTx
     }
     
+    /**
+     * Get sync progress
+     * @return Returns clint sync info
+     */
+    @objc(syncProgress:rejecter:)
+    func syncProgress(resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+        do {
+            let node: GethNode? = self.geth_node.getNode()
+            let ec: GethEthereumClient? = try node?.getEthereumClient()
+            let syncProgress: GethSyncProgress? = try ec?.syncProgress(self.ctx)
+            resolve([syncProgress] as NSObject)
+        } catch let syncErr as NSError {
+            NSLog("%@", syncErr)
+            reject(nil, nil, syncErr)
+        }
+    }
+    
+    /**
+     * Get peers info
+     * @return Returns clint sync info
+     */
+    @objc(getPeersInfo:rejecter:)
+    func getPeersInfo(resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+        do {
+            let peers: NSMutableDictionary = [:]
+            let node: GethNode? = self.geth_node.getNode()
+            let peersInfo: GethPeerInfos? = node?.getPeersInfo()
+            for index in 0..<(peersInfo?.size())! {
+                let peerInfo: GethPeerInfo? = try peersInfo?.get(index)
+                let result: [String:Any] = ["caps": peerInfo?.getCaps() ?? "", "id": peerInfo?.getID() ?? 0, "name": peerInfo?.getName() ?? ""]
+                peers.setValue(result, forKey: peerInfo?.getID() ?? "default")
+            }
+            resolve([peers] as NSObject)
+        } catch let piErr as NSError {
+            NSLog("%@", piErr)
+            reject(nil, nil, piErr)
+        }
+    }
 }
