@@ -53,7 +53,8 @@ class Geth {
   * @return {Object} return new account object
   */
   async newAccount(passphrase: string): Promise<Account> {
-    return await this.geth.newAccount(passphrase)
+      const account: Account = await this.geth.newAccount(passphrase)
+      return account
   }
 
   /**
@@ -173,6 +174,17 @@ class Geth {
     data: string): Promise<string> {
     return await this.geth.createAndSendTransaction(passphrase, nonce,
       toAddress, amount, gasLimit, gasPrice, data)
+  }
+
+  /**
+  * Sign transaction.
+  * @param {Transaction} transaction Transaction object
+  * @param {String} address Signing address
+  * @param {String} passphrase Passphrase
+  * @return {String} Returns signed transaction
+  */
+  async signTransaction(transaction: Transaction, address: string, passphrase: string): Promise<Transaction> {
+      return await this.geth.signTransaction
   }
 
   /**

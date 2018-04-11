@@ -21,6 +21,15 @@ type SyncProgress = {
   currentBlock: number,
   highestBlock: number
 }
+type Transaction = {
+    from: string,
+    to: string,
+    value: number,
+    gas: number,
+    gasPrice: number,
+    data: string,
+    nonce: number
+}
 
 type OnNewHead = {
   parentHash: string,

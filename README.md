@@ -26,7 +26,7 @@ A smart contract is a computer protocol intended to digitally facilitate, verify
 ## Supported platforms
 
 -   Android
--   iOS (Need PR)
+-   iOS
 
 ## Initial Setup
 
@@ -34,6 +34,28 @@ A smart contract is a computer protocol intended to digitally facilitate, verify
 $ npm i react-native-geth --save
 
 $ react-native link react-native-geth
+```
+
+##### Install Pod dependencies on iOS
+```
+cd ios/
+Pod init
+```
+Edit your `Podfile`
+```
+// Podfile
+# Uncomment the next line to define a global platform for your project
+platform :ios, '9.0'
+
+target 'YourReactNativeApp' do
+  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  use_frameworks!
+
+  pod 'Geth', '1.8.3'
+end
+```
+```
+pod install
 ```
 
 ## JavaScript Usage
@@ -100,9 +122,9 @@ const PrivateEth = async () => {
 ### Table of Contents
 
 -   [Geth](#geth)
-    -   [start](#start)
-    -   [stop](#stop)
-    -   [newAccount](#newaccount)
+    -   [start](#start) [android, ios]
+    -   [stop](#stop) [android, ios]
+    -   [newAccount](#newaccount) [android, ios]
     -   [setAccount](#setaccount)
     -   [getAddress](#getaddress)
     -   [balanceAccount](#balanceaccount)
@@ -117,6 +139,9 @@ const PrivateEth = async () => {
     -   [createAndSendTransaction](#createandsendtransaction)
     -   [suggestGasPrice](#suggestgasprice)
     -   [getPendingNonce](#getpendingnonce)
+    -   [sendTransaction](#sendtransaction) [ios]
+    -   [sendSignedTransaction](#sendsignedtransaction) [ios]
+    -   [signTransaction](#signtransaction) [ios]
 
 ## Geth
 
@@ -275,6 +300,38 @@ Returns **Double** Return suggested gas price
 Retrieves this account's pending nonce. This is the nonce you should use when creating a transaction.
 
 Returns **Double** Return nonce
+
+### sendTransaction
+
+Sends a transaction.
+
+**Parameters**
+
+-   `transaction` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Transaction object
+-   `passphrase` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Passphrase
+
+Returns **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Return transaction
+
+### sendSignedTransaction
+
+Sends a signed transaction.
+
+**Parameters**
+
+-   `transaction` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Signed Transaction object
+
+Returns **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Return transaction
+
+### signTransaction
+
+Signs a transaction.
+
+**Parameters**
+
+-   `transaction` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Transaction object
+-   `passphrase` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Passphrase
+
+Returns **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Return transaction
 
 ---
 # Press the "Watch" button to get updates. Do not forget the "Star" button 😀
