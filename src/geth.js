@@ -123,6 +123,14 @@ class Geth {
   }
 
   /**
+  * Retrieves the current progress of the sync algorithm.
+  * @return {Object} Return object sync progress or null
+  */
+  async getSyncProgress(): Promise<SyncProgress> {
+    return await this.geth.getSyncProgress()
+  }
+
+  /**
   * Retrieves the peers info
   * @return {Object} Return Array of connected peers
   */
