@@ -21,9 +21,29 @@ class ReactNativeGeth: NSObject {
         self.ctx = GethNewContext()
         self.geth_node = NodeRunner()
     }
-    @objc(getName)
-    func getName() -> String {
-        return TAG
+    
+    /**
+     * Get Node Information
+     * @return Return Node Information
+     */
+    @objc(getNodeInfo:rejecter:)
+    func getNodeInfo(resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+        let nodeInfo: GethNodeInfo? = self.geth_node.getNode()?.getInfo()
+        
+        var ports: [String:Any] = [:]
+        ports["listner"] = nodeInfo?.getListenerPort()
+        ports["discovery"] = nodeInfo?.getDiscoveryPort()
+        
+        var result: [String:Any] = [:]
+        result["enode"] = nodeInfo?.getEnode()
+        result["id"] = nodeInfo?.getID()
+        result["ip"] = nodeInfo?.getIP()
+        result["listenerAddress"] = nodeInfo?.getListenerAddress()
+        result["name"] = nodeInfo?.getName()
+        result["ports"] = ports
+        result["protocols"] = nodeInfo?.getProtocols()
+        
+        resolve([result] as NSObject)
     }
     
     /**
@@ -36,7 +56,7 @@ class ReactNativeGeth: NSObject {
     @objc(nodeConfig:resolver:rejecter:)
     func nodeConfig(config: NSObject, resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
         do {
-            let nodeconfig: GethNodeConfig = geth_node.getNodeConfig()!
+            let nodeconfig: GethNodeConfig = self.geth_node.getNodeConfig()!
             var nodeDir: String = DATA_DIR + "/" + ETH_DIR
             var keyStoreDir: String = DATA_DIR + "/" + ETH_DIR + "/" + KEY_STORE_DIR
             var error: NSError?
@@ -139,6 +159,27 @@ class ReactNativeGeth: NSObject {
             result["address"] = account?.getAddress().getHex()
             result["account"] = (ks?.getAccounts().size())! - 1
             resolve([result] as NSObject)
+        } catch let accError as NSError {
+            NSLog("@", accError)
+            reject(nil, nil, accError)
+        }
+    }
+    
+    /**
+     * Unlock an account with given passphrase.
+     *
+     * @param passphrase Passphrase
+     * @param promise    Promise
+     * @return return true of unlocked
+     */
+    @objc(unlockAccount:password:resolver:rejecter:)
+    func unlockAccount(address: String, password: String, resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+        do {
+            let account: GethAccount? = try self.geth_node.getAccountFromHex(address: address)
+            let ks: GethKeyStore? = self.geth_node.getKeystore()
+            try ks?.timedUnlock(account, passphrase: password, timeout: 60)
+            
+            resolve([true] as NSObject)
         } catch let accError as NSError {
             NSLog("@", accError)
             reject(nil, nil, accError)
@@ -268,13 +309,21 @@ class ReactNativeGeth: NSObject {
      * Get sync progress
      * @return Returns clint sync info
      */
-    @objc(syncProgress:rejecter:)
-    func syncProgress(resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+    @objc(getSyncProgress:rejecter:)
+    func getSyncProgress(resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
         do {
+            NSLog("Getting sync progress...")
             let node: GethNode? = self.geth_node.getNode()
             let ec: GethEthereumClient? = try node?.getEthereumClient()
             let syncProgress: GethSyncProgress? = try ec?.syncProgress(self.ctx)
-            resolve([syncProgress] as NSObject)
+            var result: [String:Any] = [:]
+            result["currentBlock"] = syncProgress?.getCurrentBlock()
+            result["highestBlock"] = syncProgress?.getHighestBlock()
+            result["startingBlock"] = syncProgress?.getStartingBlock()
+            result["knownStates"] = syncProgress?.getKnownStates()
+            result["pulledStates"] = syncProgress?.getPulledStates()
+            NSLog("%@", result)
+            resolve([result] as NSObject)
         } catch let syncErr as NSError {
             NSLog("%@", syncErr)
             reject(nil, nil, syncErr)
