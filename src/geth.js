@@ -31,6 +31,11 @@ class Geth {
     this.geth.nodeConfig(this.config)
   }
 
+  // Getters
+  get nodeInfo() {
+      return this.geth.nodeInfo
+  }
+
   /**
  * Start creates a live P2P node and starts running it.
  * @return {Boolean} return true if started.
@@ -55,6 +60,15 @@ class Geth {
   async newAccount(passphrase: string): Promise<Account> {
       const account: Account = await this.geth.newAccount(passphrase)
       return account
+  }
+
+  /**
+  * Unlock an account with given passphrase.
+  * @param {String} passphrase Passphrase
+  * @return {Object} return true if unlocked else return false
+  */
+  async unlockAccount(address: string, passphrase: string): Promise<Bool> {
+      return await this.geth.unlockAccount(address, passphrase)
   }
 
   /**
@@ -201,7 +215,7 @@ class Geth {
   * @return {String} Returns signed transaction
   */
   async signTransaction(transaction: Transaction, address: string, passphrase: string): Promise<Transaction> {
-      return await this.geth.signTransaction
+      return await this.geth.signTransaction(transaction, address, passphrase)
   }
 
   /**
