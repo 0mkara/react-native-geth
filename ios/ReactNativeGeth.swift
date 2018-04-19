@@ -224,7 +224,7 @@ class ReactNativeGeth: NSObject {
             let node: GethNode? = self.geth_node.getNode()
             let ec: GethEthereumClient? = try node?.getEthereumClient()
             let balance: GethBigInt? = try ec?.getBalanceAt(self.ctx, account: account, number: -1)
-            resolve([balance] as NSObject)
+            resolve([balance?.getInt64()] as NSObject)
         } catch let balanceErr as NSError {
             reject(nil, nil, balanceErr)
         }
@@ -337,13 +337,20 @@ class ReactNativeGeth: NSObject {
     @objc(getPeersInfo:rejecter:)
     func getPeersInfo(resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
         do {
-            let peers: NSMutableDictionary = [:]
-            let node: GethNode? = self.geth_node.getNode()
+            let peers: NSMutableArray = []
+            let node: GethNode? = self.node_runner.getNode()
             let peersInfo: GethPeerInfos? = node?.getPeersInfo()
-            for index in 0..<(peersInfo?.size())! {
-                let peerInfo: GethPeerInfo? = try peersInfo?.get(index)
-                let result: [String:Any] = ["caps": peerInfo?.getCaps() ?? "", "id": peerInfo?.getID() ?? 0, "name": peerInfo?.getName() ?? ""]
-                peers.setValue(result, forKey: peerInfo?.getID() ?? "default")
+            if(peersInfo?.size() ?? 0 > 0) {
+                for index in 0..<(peersInfo?.size())! {
+                    let peerInfo: GethPeerInfo? = try peersInfo?.get(index)
+                    let peer: NSMutableDictionary = [:]
+                    peer["remoteAddress"] = peerInfo?.getRemoteAddress()
+                    peer["caps"] = peerInfo?.getCaps().string()
+                    peer["id"] = peerInfo?.getID()
+                    peer["name"] = peerInfo?.getName()
+                    peer["localAddress"] = peerInfo?.getLocalAddress()
+                    peers.add(peer)
+                }
             }
             resolve([peers] as NSObject)
         } catch let piErr as NSError {

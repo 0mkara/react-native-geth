@@ -351,7 +351,20 @@ Gets all connected peers information in an array.
 
 **Parameters**
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Array of PeerInfo
+Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** of **[PeerInfo](#peerinfo)**
+
+### PeerInfo
+
+JSON Object
+```JSON
+{
+    caps: "[eth/62 eth/63 les/1 les/2]",
+    id: "3afdfd40713a8b188a94e4c7a9ddc61bc6ef176c3abbb13d1dd35eb367725b95329a7570039044dbffa49c50d4aa65f0a1f99ee68e46b8e2f09100d11d4fc85a",
+    localAddress: "192.168.0.2:63235",
+    name: "Geth/v1.8.3-stable-329ac18e/linux-amd64/go1.10"
+    remoteAddress: "31.19.176.208:30303"
+}
+```
 
 ---
 # Press the "Watch" button to get updates. Do not forget the "Star" button 😀
