@@ -4,9 +4,10 @@ import { Platform, NativeModules } from 'react-native'
 import type {
   NodeConfig,
   Account,
-  ListAccounts,
+  Accounts,
   SyncProgress,
-  GethNativeModule
+  GethNativeModule,
+  PeersInfo
 } from './types'
 
 /**
@@ -134,7 +135,7 @@ class Geth {
   * Retrieves the peers info
   * @return {Object} Return Array of connected peers
   */
-  async getPeersInfo(): Promise<Int> {
+  async getPeersInfo(): Promise<PeersInfo> {
     return await this.geth.getPeersInfo()
   }
 
@@ -193,7 +194,7 @@ class Geth {
   * Returns all key files present in the directory.
   * @return {Array} Return array of accounts objects
   */
-  async listAccounts(): Promise<ListAccounts> {
+  async listAccounts(): Promise<Accounts> {
     return await this.geth.listAccounts()
   }
 
