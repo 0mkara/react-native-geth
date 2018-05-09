@@ -18,6 +18,8 @@ class NodeRunner {
     private let ETH_DIR: String = ".ethereum"
     private var STATIC_NODES_FILES_PATH: String
     private let STATIC_NODES_FILES_NAME: String = "static-nodes.json"
+    private var chainID: GethBigInt = GethBigInt(1) // Default mainnet chain ID
+    private var coinbase: GethAccount?
     
     init() {
         self.nodeconf = GethNewNodeConfig()
@@ -44,6 +46,43 @@ class NodeRunner {
         self.keyStore = ks
     }
     
+    func getKeystore() -> GethKeyStore? {
+        return self.keyStore
+    }
+    
+    func setChainID(chainID: GethBigInt) -> Void {
+        self.chainID = chainID
+    }
+    
+    func getChainID() -> GethBigInt {
+        return self.chainID
+    }
+    
+    func getCoinbase() -> GethAccount? {
+        return self.coinbase
+    }
+    
+    func setCoinbase(account: GethAccount) -> Void {
+        self.coinbase = account
+    }
+    
+    func getAccountFromHex(address: String) throws -> GethAccount? {
+        let accounts = self.keyStore?.getAccounts()
+        var size: Int = Int(0)
+        var result: GethAccount?
+        if(accounts != nil) {
+            size = (accounts?.size())!
+        }
+        for index in 0...size {
+            let account = try accounts?.get(index)
+            if(account?.getAddress().getHex() == address) {
+                result = account
+                break
+            }
+        }
+        return result
+    }
+    
     func writeStaticNodesFile(enodes: String) -> Void {
         do {
             var isDirectory = ObjCBool(true)
@@ -63,14 +102,14 @@ class NodeRunner {
                     fileManager.createFile(atPath: filePath, contents: fileContent, attributes: nil)
                 }
             } else {
-                throw FileError.RuntimeError("File path not found")
+                throw NodeError.RuntimeError("File path not found")
             }
         } catch let writeErr as NSError {
             NSLog("@s", writeErr)
         }
     }
     
-    enum FileError: Error {
+    enum NodeError: Error {
         case RuntimeError(String)
     }
 }

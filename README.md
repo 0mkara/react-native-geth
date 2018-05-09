@@ -26,7 +26,7 @@ A smart contract is a computer protocol intended to digitally facilitate, verify
 ## Supported platforms
 
 -   Android
--   iOS (Need PR)
+-   iOS
 
 ## Initial Setup
 
@@ -34,6 +34,28 @@ A smart contract is a computer protocol intended to digitally facilitate, verify
 $ npm i react-native-geth --save
 
 $ react-native link react-native-geth
+```
+
+##### Install Pod dependencies on iOS
+```
+cd ios/
+Pod init
+```
+Edit your `Podfile`
+```
+// Podfile
+# Uncomment the next line to define a global platform for your project
+platform :ios, '9.0'
+
+target 'YourReactNativeApp' do
+  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  use_frameworks!
+
+  pod 'Geth', '1.8.3'
+end
+```
+```
+pod install
 ```
 
 ## JavaScript Usage
@@ -100,9 +122,9 @@ const PrivateEth = async () => {
 ### Table of Contents
 
 -   [Geth](#geth)
-    -   [start](#start)
-    -   [stop](#stop)
-    -   [newAccount](#newaccount)
+    -   [start](#start) [android, ios]
+    -   [stop](#stop) [android, ios]
+    -   [newAccount](#newaccount) [android, ios]
     -   [setAccount](#setaccount)
     -   [getAddress](#getaddress)
     -   [balanceAccount](#balanceaccount)
@@ -113,10 +135,15 @@ const PrivateEth = async () => {
     -   [deleteAccount](#deleteaccount)
     -   [exportKey](#exportkey)
     -   [importKey](#importkey)
-    -   [listAccounts](#listaccounts)
+    -   [listAccounts](#listaccounts) [android, ios]
     -   [createAndSendTransaction](#createandsendtransaction)
     -   [suggestGasPrice](#suggestgasprice)
     -   [getPendingNonce](#getpendingnonce)
+    -   [sendTransaction](#sendtransaction) [ios]
+    -   [sendSignedTransaction](#sendsignedtransaction) [ios]
+    -   [signTransaction](#signtransaction) [ios]
+    -   [getBalance](#getbalance) [ios]
+    -   [getPeersInfo](#getpeersinfo) [ios]
 
 ## Geth
 
@@ -275,6 +302,69 @@ Returns **Double** Return suggested gas price
 Retrieves this account's pending nonce. This is the nonce you should use when creating a transaction.
 
 Returns **Double** Return nonce
+
+### sendTransaction
+
+Sends a transaction.
+
+**Parameters**
+
+-   `transaction` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Transaction object
+-   `passphrase` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Passphrase
+
+Returns **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Return transaction
+
+### sendSignedTransaction
+
+Sends a signed transaction.
+
+**Parameters**
+
+-   `transaction` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Signed Transaction object
+
+Returns **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Return transaction
+
+### signTransaction
+
+Signs a transaction.
+
+**Parameters**
+
+-   `transaction` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Transaction object
+-   `passphrase` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Passphrase
+
+Returns **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Return transaction
+
+### getBalance
+
+Gets balance of an address.
+
+**Parameters**
+
+-   `address` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Hex address string
+
+Returns **[BN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/BN)** Wei balance
+
+### getPeersInfo
+
+Gets all connected peers information in an array.
+
+**Parameters**
+
+Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** of **[PeerInfo](#peerinfo)**
+
+### PeerInfo
+
+JSON Object
+```JSON
+{
+    caps: "[eth/62 eth/63 les/1 les/2]",
+    id: "3afdfd40713a8b188a94e4c7a9ddc61bc6ef176c3abbb13d1dd35eb367725b95329a7570039044dbffa49c50d4aa65f0a1f99ee68e46b8e2f09100d11d4fc85a",
+    localAddress: "192.168.0.2:63235",
+    name: "Geth/v1.8.3-stable-329ac18e/linux-amd64/go1.10"
+    remoteAddress: "31.19.176.208:30303"
+}
+```
 
 ---
 # Press the "Watch" button to get updates. Do not forget the "Star" button 😀

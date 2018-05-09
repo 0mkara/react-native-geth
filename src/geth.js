@@ -4,9 +4,10 @@ import { Platform, NativeModules } from 'react-native'
 import type {
   NodeConfig,
   Account,
-  ListAccounts,
+  Accounts,
   SyncProgress,
-  GethNativeModule
+  GethNativeModule,
+  PeersInfo
 } from './types'
 
 /**
@@ -31,6 +32,11 @@ class Geth {
     this.geth.nodeConfig(this.config)
   }
 
+  // Getters
+  get nodeInfo() {
+      return this.geth.nodeInfo
+  }
+
   /**
  * Start creates a live P2P node and starts running it.
  * @return {Boolean} return true if started.
@@ -53,7 +59,17 @@ class Geth {
   * @return {Object} return new account object
   */
   async newAccount(passphrase: string): Promise<Account> {
-    return await this.geth.newAccount(passphrase)
+      const account: Account = await this.geth.newAccount(passphrase)
+      return account
+  }
+
+  /**
+  * Unlock an account with given passphrase.
+  * @param {String} passphrase Passphrase
+  * @return {Object} return true if unlocked else return false
+  */
+  async unlockAccount(address: string, passphrase: string): Promise<Bool> {
+      return await this.geth.unlockAccount(address, passphrase)
   }
 
   /**
@@ -91,11 +107,36 @@ class Geth {
   }
 
   /**
+  * Returns the wei balance of the specified account.
+  * @param {String} address Address of account being looked up.
+  * @return {String} Return balance.
+  */
+  async getBalance(address: string): Promise<string> {
+    return await this.geth.getBalance(address)
+  }
+
+  /**
   * Retrieves the current progress of the sync algorithm.
   * @return {Object} Return object sync progress or null
   */
   async syncProgress(): Promise<SyncProgress> {
     return await this.geth.syncProgress()
+  }
+
+  /**
+  * Retrieves the current progress of the sync algorithm.
+  * @return {Object} Return object sync progress or null
+  */
+  async getSyncProgress(): Promise<SyncProgress> {
+    return await this.geth.getSyncProgress()
+  }
+
+  /**
+  * Retrieves the peers info
+  * @return {Object} Return Array of connected peers
+  */
+  async getPeersInfo(): Promise<PeersInfo> {
+    return await this.geth.getPeersInfo()
   }
 
   /**
@@ -153,7 +194,7 @@ class Geth {
   * Returns all key files present in the directory.
   * @return {Array} Return array of accounts objects
   */
-  async listAccounts(): Promise<ListAccounts> {
+  async listAccounts(): Promise<Accounts> {
     return await this.geth.listAccounts()
   }
 
@@ -173,6 +214,17 @@ class Geth {
     data: string): Promise<string> {
     return await this.geth.createAndSendTransaction(passphrase, nonce,
       toAddress, amount, gasLimit, gasPrice, data)
+  }
+
+  /**
+  * Sign transaction.
+  * @param {Transaction} transaction Transaction object
+  * @param {String} address Signing address
+  * @param {String} passphrase Passphrase
+  * @return {String} Returns signed transaction
+  */
+  async signTransaction(transaction: Transaction, address: string, passphrase: string): Promise<Transaction> {
+      return await this.geth.signTransaction(transaction, address, passphrase)
   }
 
   /**
