@@ -7,25 +7,27 @@
 		"flow:deps": "flow-typed install"
 	},
 	"peerDependencies": {
-		"react": "*",
-		"react-native": "*",
+		"react": "^16.8.1",
+		"react-native": ">=0.60.0-rc.0 <1.0.x",
 		"react-native-swift": "^1.2.1"
 	},
 	"devDependencies": {
-		"babel-eslint": "^8.2.2",
-		"babel-jest": "^21.2.0",
+		"react": "^16.9.0",
+		"react-native": "^0.61.5",
+		"babel-eslint": "^10.1.0",
+		"babel-jest": "^26.0.1",
 		"babel-preset-flow": "^6.23.0",
-		"babel-preset-react-native": "4.0.0",
-		"eslint": "^4.19.1",
-		"eslint-config-airbnb": "^16.1.0",
+		"babel-preset-react-native": "4.0.1",
+		"eslint": "^7.0.0",
+		"eslint-config-airbnb": "^18.1.0",
 		"eslint-import-resolver-node": "^0.3.1",
-		"eslint-plugin-flowtype": "^2.40.1",
+		"eslint-plugin-flowtype": "^4.7.0",
 		"eslint-plugin-import": "^2.8.0",
 		"eslint-plugin-jsx-a11y": "^6.0.3",
 		"eslint-plugin-react": "^7.7.0",
 		"eslint-plugin-react-native": "^3.2.0",
-		"flow-bin": "^0.61.0",
-		"jest": "^21.2.1"
+		"flow-bin": "^0.124.0",
+		"jest": "^26.0.1"
 	},
 	"jest": {
 		"preset": "react-native"
@@ -41,7 +43,10 @@
 			"postlink": "node node_modules/react-native-geth/scripts/rnpm-postlink"
 		}
 	},
-	"author": "Yassine Kassy <y.kassy@me.com> (https://www.linkedin.com/in/yassinekassy)",
+	"author": {
+		"name": "Yassine Kassy <y.kassy@me.com> (https://www.linkedin.com/in/yassinekassy)",
+		"email": "y.kassy@me.com"
+	},
 	"license": "MIT",
 	"keywords": [
 		"geth",
