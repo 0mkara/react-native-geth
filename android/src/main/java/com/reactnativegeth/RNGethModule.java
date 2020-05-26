@@ -82,15 +82,19 @@ public class RNGethModule extends ReactContextBaseJavaModule {
             String keyStoreDir = KEY_STORE_DIR;
             if (config.hasKey("enodes"))
                 GethHolder.writeStaticNodesFile(config.getString("enodes"));
-            if (config.hasKey("networkID")) nc.setEthereumNetworkID(config.getInt("networkID"));
-            if (config.hasKey("maxPeers")) nc.setMaxPeers(config.getInt("maxPeers"));
-            if (config.hasKey("genesis")) nc.setEthereumGenesis(config.getString("genesis"));
-            if (config.hasKey("nodeDir")) nodeDir = config.getString("nodeDir");
-            if (config.hasKey("keyStoreDir")) keyStoreDir = config.getString("keyStoreDir");
-            Node nd = Geth.newNode(getReactApplicationContext()
-                    .getFilesDir() + "/" + nodeDir, nc);
-            KeyStore ks = new KeyStore(getReactApplicationContext()
-                    .getFilesDir() + "/" + keyStoreDir, Geth.LightScryptN, Geth.LightScryptP);
+            if (config.hasKey("networkID"))
+                nc.setEthereumNetworkID(config.getInt("networkID"));
+            if (config.hasKey("maxPeers"))
+                nc.setMaxPeers(config.getInt("maxPeers"));
+            if (config.hasKey("genesis"))
+                nc.setEthereumGenesis(config.getString("genesis"));
+            if (config.hasKey("nodeDir"))
+                nodeDir = config.getString("nodeDir");
+            if (config.hasKey("keyStoreDir"))
+                keyStoreDir = config.getString("keyStoreDir");
+            Node nd = Geth.newNode(getReactApplicationContext().getFilesDir() + "/" + nodeDir, nc);
+            KeyStore ks = new KeyStore(getReactApplicationContext().getFilesDir() + "/" + keyStoreDir,
+                    Geth.LightScryptN, Geth.LightScryptP);
             GethHolder.setNodeConfig(nc);
             GethHolder.setKeyStore(ks);
             GethHolder.setNode(nd);
@@ -172,7 +176,7 @@ public class RNGethModule extends ReactContextBaseJavaModule {
         try {
             Account acc = GethHolder.getKeyStore().getAccounts().get(accID);
             GethHolder.setAccount(acc);
-            //accounts.set(0, acc);
+            // accounts.set(0, acc);
             promise.resolve(true);
         } catch (Exception e) {
             promise.reject(SET_ACCOUNT_ERROR, e);
@@ -212,8 +216,7 @@ public class RNGethModule extends ReactContextBaseJavaModule {
             Account acc = GethHolder.getAccount();
             if (acc != null) {
                 Context ctx = new Context();
-                BigInt balance = GethHolder.getNode().getEthereumClient()
-                        .getBalanceAt(ctx, acc.getAddress(), -1);
+                BigInt balance = GethHolder.getNode().getEthereumClient().getBalanceAt(ctx, acc.getAddress(), -1);
                 promise.resolve(balance.toString());
             } else {
                 promise.reject(BALANCE_ACCOUNT_ERROR, "call method setAccount() before");
@@ -234,8 +237,7 @@ public class RNGethModule extends ReactContextBaseJavaModule {
     public void balanceAt(String address, Promise promise) {
         try {
             Context ctx = new Context();
-            BigInt balance = GethHolder.getNode().getEthereumClient()
-                .getBalanceAt(ctx, new Address(address), -1);
+            BigInt balance = GethHolder.getNode().getEthereumClient().getBalanceAt(ctx, new Address(address), -1);
             promise.resolve(balance.toString());
         } catch (Exception e) {
             promise.reject(BALANCE_AT_ERROR, e);
@@ -243,8 +245,8 @@ public class RNGethModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * SyncProgress retrieves the current progress of the sync algorithm.
-     * - Break change : getSyncProgress ==> syncProgress -
+     * SyncProgress retrieves the current progress of the sync algorithm. - Break
+     * change : getSyncProgress ==> syncProgress -
      *
      * @param promise Promise
      * @return Return object sync progress or null
@@ -307,8 +309,7 @@ public class RNGethModule extends ReactContextBaseJavaModule {
                     headerMap.putString("nounce", header.getNonce().getHex());
                     headerMap.putString("hash", header.getHash().getHex());
                     headerMap.putArray("extra", extraArray);
-                    getReactApplicationContext()
-                        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                             .emit("GethNewHead", headerMap);
                 }
             };
@@ -359,8 +360,7 @@ public class RNGethModule extends ReactContextBaseJavaModule {
                 GethHolder.getKeyStore().deleteAccount(acc, passphrase);
                 promise.resolve(true);
             } else {
-                promise.reject(DELETE_ACCOUNT_ERROR, 
-                     "call method setAccount('accountId') before");
+                promise.reject(DELETE_ACCOUNT_ERROR, "call method setAccount('accountId') before");
             }
         } catch (Exception e) {
             promise.reject(DELETE_ACCOUNT_ERROR, e);
@@ -380,8 +380,7 @@ public class RNGethModule extends ReactContextBaseJavaModule {
         try {
             Account acc = GethHolder.getAccount();
             if (acc != null) {
-                byte[] key = GethHolder.getKeyStore()
-                    .exportKey(acc, creationPassphrase, exportPassphrase);
+                byte[] key = GethHolder.getKeyStore().exportKey(acc, creationPassphrase, exportPassphrase);
                 promise.resolve(key);
             } else {
                 promise.reject(EXPORT_KEY_ERROR, "call method setAccount('accountId') before");
@@ -411,8 +410,8 @@ public class RNGethModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Returns all key files present in the directory.
-     * - Break change : methode getAccounts => listAccounts -
+     * Returns all key files present in the directory. - Break change : methode
+     * getAccounts => listAccounts -
      *
      * @param promise Promise
      * @return Return array of accounts objects
@@ -451,9 +450,8 @@ public class RNGethModule extends ReactContextBaseJavaModule {
      * @return Return String transaction
      */
     @ReactMethod
-    public void createAndSendTransaction(String passphrase, double nonce, String toAddress,
-                                         String amount, double gasLimit, double gasPrice,
-                                         String data, Promise promise) {
+    public void createAndSendTransaction(String passphrase, double nonce, String toAddress, String amount,
+            double gasLimit, double gasPrice, String data, Promise promise) {
         try {
             Account acc = GethHolder.getAccount();
             Address fromAddress = acc.getAddress();
@@ -461,18 +459,12 @@ public class RNGethModule extends ReactContextBaseJavaModule {
             Context ctx = new Context();
             BigInt bigIntAmount = new BigInt(0);
             bigIntAmount.setString(amount, 10);
-            if (nonce == -1) nonce = GethHolder.getNode().getEthereumClient()
-                .getPendingNonceAt(ctx, fromAddress);
-            Transaction tx = new Transaction(
-                    (long) nonce,
-                    new Address(toAddress),
-                    bigIntAmount,
-                    (long) gasLimit,
-                    new BigInt((long) gasPrice),
-                    data.getBytes("UTF8"));
+            if (nonce == -1)
+                nonce = GethHolder.getNode().getEthereumClient().getPendingNonceAt(ctx, fromAddress);
+            Transaction tx = new Transaction((long) nonce, new Address(toAddress), bigIntAmount, (long) gasLimit,
+                    new BigInt((long) gasPrice), data.getBytes("UTF8"));
             // Sign a transaction with a single authorization
-            Transaction signed = GethHolder.getKeyStore()
-                .signTxPassphrase(acc, passphrase, tx, chain);
+            Transaction signed = GethHolder.getKeyStore().signTxPassphrase(acc, passphrase, tx, chain);
             // Send it out to the network.
             GethHolder.getNode().getEthereumClient().sendTransaction(ctx, signed);
             promise.resolve(tx.toString());
@@ -482,7 +474,77 @@ public class RNGethModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Retrieves the currently suggested gas price to allow a timely execution of a transaction.
+     * Sign a transaction
+     *
+     * @param passphrase  Passphrase
+     * @param transaction Transaction
+     * @param promise     Promise
+     * @return Return string Transaction
+     */
+    @ReactMethod
+    public void signTransaction(String passphrase, ReadableMap transaction, Double chain, Promise promise) {
+        try {
+            long nonce = 0;
+            String toAddress = "";
+            long value = 0;
+            long gasLimit = 0;
+            long gasPrice = 0;
+            String data = "";
+            if (transaction.hasKey("nonce")) {
+                Double n = transaction.getDouble("nonce");
+                nonce = n.longValue();
+            }
+            if (transaction.hasKey("to")) {
+                toAddress = transaction.getString("to");
+            }
+            if (transaction.hasKey("value")) {
+                Double v = transaction.getDouble("value");
+                value = v.longValue();
+            }
+            if (transaction.hasKey("gasLimit")) {
+                Double gL = transaction.getDouble("gasLimit");
+                gasLimit = gL.longValue();
+            }
+            if (transaction.hasKey("gasPrice")) {
+                Double gP = transaction.getDouble("gasPrice");
+                gasPrice = gP.longValue();
+            }
+            if (transaction.hasKey("data")) {
+                data = transaction.getString("data");
+            }
+            Transaction tx = new Transaction(nonce, new Address(toAddress), new BigInt(value), gasLimit, new BigInt(gasPrice), data.getBytes("UTF8"));
+            promise.resolve(tx.encodeJSON());
+        } catch (Exception e) {
+            promise.reject(NEW_TRANSACTION_ERROR, e);
+        }
+    }
+
+    /**
+     * Create a new Transaction
+     *
+     * @param nonce     Nonce
+     * @param toAddress Address
+     * @param value     Ether value
+     * @param gasLimit  Gas limit for the transaction
+     * @param gasPrice  Gas price to be used for the transaction
+     * @param data      Transaction data
+     * @param promise   Promise
+     * @return Return Transaction
+     */
+    @ReactMethod
+    public void newTransaction(long nonce, String toAddress, long value, long gasLimit, long gasPrice,
+            String data, Promise promise) {
+        try {
+            Transaction tx = new Transaction(nonce, new Address(toAddress), new BigInt(value), gasLimit, new BigInt(gasPrice), data.getBytes("UTF8"));
+            promise.resolve(tx.encodeJSON());
+        } catch (Exception e) {
+            promise.reject(NEW_TRANSACTION_ERROR, e);
+        }
+    }
+
+    /**
+     * Retrieves the currently suggested gas price to allow a timely execution of a
+     * transaction.
      *
      * @param promise Promise
      * @return Return Double suggested gas price
@@ -499,8 +561,8 @@ public class RNGethModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Retrieves this account's pending nonce. This is the nonce you should use when creating a
-     * transaction.
+     * Retrieves this account's pending nonce. This is the nonce you should use when
+     * creating a transaction.
      *
      * @param promise Promise
      * @return return Double nonce
@@ -520,33 +582,31 @@ public class RNGethModule extends ReactContextBaseJavaModule {
 }
 
 /*
-   // return Account
-   @ReactMethod
-   public void importECDSAKey(Byte account, String password, Promise promise) {
-   }
-
-   // return Account
-   @ReactMethod
-   public void importPreSaleKey(Byte account, String password, Promise promise) {
-   }
-
-   // return void
-   @ReactMethod
-   public void lock(String account, Promise promise) {
-   }
-
-   // return void
-   @ReactMethod
-   public void unlock(String account, String password, Promise promise) {
-   }
-
-   // return void
-   @ReactMethod
-   public void timedUnlock(String account, String password, String time, Promise promise) {
-   }
-
-   // return boolean
-   @ReactMethod
-   public void hasAddress(String account, Promise promise) {
-   }
+ * // return Account
+ * 
+ * @ReactMethod public void importECDSAKey(Byte account, String password,
+ * Promise promise) { }
+ * 
+ * // return Account
+ * 
+ * @ReactMethod public void importPreSaleKey(Byte account, String password,
+ * Promise promise) { }
+ * 
+ * // return void
+ * 
+ * @ReactMethod public void lock(String account, Promise promise) { }
+ * 
+ * // return void
+ * 
+ * @ReactMethod public void unlock(String account, String password, Promise
+ * promise) { }
+ * 
+ * // return void
+ * 
+ * @ReactMethod public void timedUnlock(String account, String password, String
+ * time, Promise promise) { }
+ * 
+ * // return boolean
+ * 
+ * @ReactMethod public void hasAddress(String account, Promise promise) { }
  */
