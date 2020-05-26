@@ -244,13 +244,11 @@ class Geth {
    */
   async signTransaction(
     passphrase: String,
-    transaction: String,
-    chainId?: Number
+    transaction: String
   ): Promise<String> {
     return await this.geth.signTransaction(
       passphrase,
-      transaction,
-      chainId || 5
+      transaction
     );
   }
 

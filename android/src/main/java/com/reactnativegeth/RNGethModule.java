@@ -482,7 +482,7 @@ public class RNGethModule extends ReactContextBaseJavaModule {
      * @return Return string Transaction
      */
     @ReactMethod
-    public void signTransaction(String passphrase, ReadableMap transaction, Double chain, Promise promise) {
+    public void signTransaction(String passphrase, ReadableMap transaction, Promise promise) {
         try {
             long nonce = 0;
             String toAddress = "";
@@ -513,7 +513,10 @@ public class RNGethModule extends ReactContextBaseJavaModule {
                 data = transaction.getString("data");
             }
             Transaction tx = new Transaction(nonce, new Address(toAddress), new BigInt(value), gasLimit, new BigInt(gasPrice), data.getBytes("UTF8"));
-            promise.resolve(tx.encodeJSON());
+            BigInt chain = new BigInt(GethHolder.getNodeConfig().getEthereumNetworkID());
+            Account signer = GethHolder.getAccount();
+            Transaction signed = GethHolder.getKeyStore().signTxPassphrase(signer, passphrase, tx, chain);
+            promise.resolve(signed.encodeJSON());
         } catch (Exception e) {
             promise.reject(NEW_TRANSACTION_ERROR, e);
         }
