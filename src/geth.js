@@ -8,6 +8,7 @@ import type {
   SyncProgress,
   GethNativeModule,
   PeersInfo,
+  SignedTransaction
 } from "./types";
 
 /**
@@ -245,28 +246,10 @@ class Geth {
   async signTransaction(
     passphrase: String,
     transaction: String
-  ): Promise<String> {
+  ): Promise<SignedTransaction> {
     return await this.geth.signTransaction(
       passphrase,
       transaction
-    );
-  }
-
-  async newTransaction(
-    nonce: Number,
-    toAddress: String,
-    value: Number,
-    gasLimit: Number,
-    gasPrice: Number,
-    data: String
-  ): Promise<String> {
-    return await this.geth.newTransaction(
-      nonce,
-      toAddress,
-      value,
-      gasLimit,
-      gasPrice,
-      data
     );
   }
 

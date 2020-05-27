@@ -518,9 +518,10 @@ public class RNGethModule extends ReactContextBaseJavaModule {
             Transaction signed = GethHolder.getKeyStore().signTxPassphrase(signer, passphrase, tx, chain);
             byte[] rawTxBytes = signed.encodeRLP();
             String rawTxHex = bytesToHex(rawTxBytes);
-            // TODO: we need signed transaction and raw transaction
-            // promise.resolve(signed.encodeJSON());
-            promise.resolve(rawTxHex);
+            WritableMap stx = new WritableNativeMap();
+            stx.putString("transaction", signed.encodeJSON());
+            stx.putString("raw", rawTxHex);
+            promise.resolve(stx);
         } catch (Exception e) {
             promise.reject(NEW_TRANSACTION_ERROR, e);
         }
@@ -534,29 +535,6 @@ public class RNGethModule extends ReactContextBaseJavaModule {
             hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
         return new String(hexChars);
-    }
-
-    /**
-     * Create a new Transaction
-     *
-     * @param nonce     Nonce
-     * @param toAddress Address
-     * @param value     Ether value
-     * @param gasLimit  Gas limit for the transaction
-     * @param gasPrice  Gas price to be used for the transaction
-     * @param data      Transaction data
-     * @param promise   Promise
-     * @return Return Transaction
-     */
-    @ReactMethod
-    public void newTransaction(long nonce, String toAddress, long value, long gasLimit, long gasPrice,
-            String data, Promise promise) {
-        try {
-            Transaction tx = new Transaction(nonce, new Address(toAddress), new BigInt(value), gasLimit, new BigInt(gasPrice), data.getBytes("UTF8"));
-            promise.resolve(tx.encodeJSON());
-        } catch (Exception e) {
-            promise.reject(NEW_TRANSACTION_ERROR, e);
-        }
     }
 
     /**

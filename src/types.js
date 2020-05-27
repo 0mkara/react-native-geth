@@ -31,6 +31,11 @@ type Transaction = {
     nonce: number
 }
 
+type SignedTransaction = {
+  transaction: string,
+  raw: string
+}
+
 type OnNewHead = {
   parentHash: string,
   uncleHash: string,
@@ -73,7 +78,8 @@ type GethNativeModule = {
     toAddress: string, amount: number, gasLimit: number, gasPrice: number,
     data: string) => Promise<string>,
   suggestGasPrice: () => Promise<number>,
-  getPendingNonce: () => Promise<number>
+  getPendingNonce: () => Promise<number>,
+  signTransaction: () => Promise<SignedTransaction>
 }
 
 export type {
