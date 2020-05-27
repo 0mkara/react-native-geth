@@ -22,7 +22,6 @@ import org.ethereum.geth.Accounts;
 import org.ethereum.geth.Address;
 import org.ethereum.geth.BigInt;
 import org.ethereum.geth.Context;
-import org.ethereum.geth.EthereumClient;
 import org.ethereum.geth.Geth;
 import org.ethereum.geth.Header;
 import org.ethereum.geth.KeyStore;
@@ -56,6 +55,7 @@ public class RNGethModule extends ReactContextBaseJavaModule {
     private static final String ETH_DIR = ".ethereum";
     private static final String KEY_STORE_DIR = "keystore";
     private GethHolder GethHolder;
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
     public RNGethModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -516,10 +516,24 @@ public class RNGethModule extends ReactContextBaseJavaModule {
             BigInt chain = new BigInt(GethHolder.getNodeConfig().getEthereumNetworkID());
             Account signer = GethHolder.getAccount();
             Transaction signed = GethHolder.getKeyStore().signTxPassphrase(signer, passphrase, tx, chain);
-            promise.resolve(signed.encodeJSON());
+            byte[] rawTxBytes = signed.encodeRLP();
+            String rawTxHex = bytesToHex(rawTxBytes);
+            // TODO: we need signed transaction and raw transaction
+            // promise.resolve(signed.encodeJSON());
+            promise.resolve(rawTxHex);
         } catch (Exception e) {
             promise.reject(NEW_TRANSACTION_ERROR, e);
         }
+    }
+
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars);
     }
 
     /**
