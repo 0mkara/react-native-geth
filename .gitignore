@@ -63,3 +63,9 @@ flow-typed/
 
 # Test App
 RNGethSample/
+
+# vscode
+.vscode/
+android/.classpath
+android/.project
+android/.settings/
