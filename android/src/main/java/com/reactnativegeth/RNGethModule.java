@@ -489,7 +489,7 @@ public class RNGethModule extends ReactContextBaseJavaModule {
             long value = 0;
             long gasLimit = 0;
             long gasPrice = 0;
-            String data = "";
+            byte[] data = hexStringToByteArray("");
             if (transaction.hasKey("nonce")) {
                 Double n = transaction.getDouble("nonce");
                 nonce = n.longValue();
@@ -510,9 +510,9 @@ public class RNGethModule extends ReactContextBaseJavaModule {
                 gasPrice = gP.longValue();
             }
             if (transaction.hasKey("data")) {
-                data = transaction.getString("data");
+                data = hexStringToByteArray(transaction.getString("data"));
             }
-            Transaction tx = new Transaction(nonce, new Address(toAddress), new BigInt(value), gasLimit, new BigInt(gasPrice), data.getBytes("UTF8"));
+            Transaction tx = new Transaction(nonce, new Address(toAddress), new BigInt(value), gasLimit, new BigInt(gasPrice), data);
             BigInt chain = new BigInt(GethHolder.getNodeConfig().getEthereumNetworkID());
             Account signer = GethHolder.getAccount();
             Transaction signed = GethHolder.getKeyStore().signTxPassphrase(signer, passphrase, tx, chain);
@@ -535,6 +535,14 @@ public class RNGethModule extends ReactContextBaseJavaModule {
             hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
         return new String(hexChars);
+    }
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
     }
 
     /**
